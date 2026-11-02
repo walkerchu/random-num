@@ -1,0 +1,38 @@
+# DevOps with Docker, Fall 2026
+# offer by The University of Helsinki
+# chapter 4/deployment-pipelines
+# url: https://courses.mooc.fi/org/uh-cs/courses/devops-with-docker-fall-2026/chapter-4/deployment-pipelines
+# Exercise 3.2. Deployment pipeline to a cloud service
+# created at Nov 01, 2026 15:14 HKT
+
+name: Random API v3
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  ci: # name of the job
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+          cache: "pip" # caching pip dependencies
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Lint with Ruff
+        run: ruff check .
+
+      - name: Run unit tests
+        run: python -m pytest -v
